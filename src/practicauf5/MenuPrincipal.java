@@ -307,13 +307,30 @@ public class MenuPrincipal extends JFrame implements ActionListener, ChangeListe
                     for(int generals = 0; generals < (int) entradaGeneralSpinner.getValue(); generals++){
                         String filaColumn = butaquesSeleccionades.get(i);
                         String [] filaColumnV = filaColumn.split(":");
-                        System.out.println("insert into butaques values('" + nomPersona.getText() + "','" + dniPersona.getText() + "'," + filaColumnV[0] + "," + filaColumnV[1]);
-//                        st.execute("insert into butaques values('" + nomPersona.getText() + "','" + dniPersona + "'," + filaColumnV[0] + "," + filaColumnV[1]);
+                        butaques[Integer.parseInt(filaColumnV[0])][Integer.parseInt(filaColumnV[1])].setIcon(butacaOcupada);
+                        st.execute("insert into butaques values('" + nomPersona.getText() + "','" + dniPersona.getText() + "'," + filaColumnV[0] + "," + filaColumnV[1] + ", 'general')");
                         i++;
                     }
                     
+                    for(int joves = 0; joves < (int) entradaJoveSpinner.getValue(); joves++){
+                        String filaColumn = butaquesSeleccionades.get(i);
+                        String [] filaColumnV = filaColumn.split(":");
+                        butaques[Integer.parseInt(filaColumnV[0])][Integer.parseInt(filaColumnV[1])].setIcon(butacaOcupada);
+                        st.execute("insert into butaques values('" + nomPersona.getText() + "','" + dniPersona.getText() + "'," + filaColumnV[0] + "," + filaColumnV[1] + ", 'jove')");
+                        i++;
+                    }
                     
+                    for(int jubilats = 0; jubilats < (int) entradaJubilatSpinner.getValue(); jubilats++){
+                        String filaColumn = butaquesSeleccionades.get(i);
+                        String [] filaColumnV = filaColumn.split(":");
+                        butaques[Integer.parseInt(filaColumnV[0])][Integer.parseInt(filaColumnV[1])].setIcon(butacaOcupada);
+                        st.execute("insert into butaques values('" + nomPersona.getText() + "','" + dniPersona.getText() + "'," + filaColumnV[0] + "," + filaColumnV[1] + ", 'jubilat')");
+                        i++;
+                    }
+                    c.commit();
+                    ventanaPagament.dispose();
                 }
+                
                 
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
