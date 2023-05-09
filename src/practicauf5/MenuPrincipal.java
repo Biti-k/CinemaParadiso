@@ -190,6 +190,8 @@ public class MenuPrincipal extends JFrame implements ActionListener, ChangeListe
                            entradesReservades.setFont(new Font("TimesRoman", Font.PLAIN, 9));
                         }if(entradesReservades.getText().length() > 16 * 25){
                             JOptionPane.showMessageDialog(null, "No pots tenir el cinema només per tu :|");
+                            butaquesSeleccionades.removeAll(butaquesSeleccionades);
+                            limpiar_butaques();
                         }
                     }
                 });
@@ -199,11 +201,24 @@ public class MenuPrincipal extends JFrame implements ActionListener, ChangeListe
         }
     }
     
+    private void limpiar_butaques(){
+        for(int i = 1; i <= 8; i++){
+            for(int j = 1; j <= 15; j++){
+               if(butaques[i][j].getIcon() != butacaOcupada){
+                    butaques[i][j].setIcon(butacaLliure); 
+               }
+            }
+        }
+        entradesReservades.setText("");
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == pantallaPagament){
             if(butaquesSeleccionades.size() == 0){
                 JOptionPane.showMessageDialog(null, "Escolleix alguna butaca");
+            }else if(dniPersona.getText().length() != 9){
+                JOptionPane.showMessageDialog(null, "Format dni incorrecte. Han de ser 9 caracters");
             }else if(potObrirPagament && !nomPersona.getText().equals("") && !dniPersona.getText().equals("")){
                  //pantallaPagament.setAlignmentX(CENTER_ALIGNMENT);
                 preuTotal = 0;
@@ -343,7 +358,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, ChangeListe
     public void stateChanged(ChangeEvent e) {
         if(e.getSource() == entradaGeneralSpinner || e.getSource() == entradaJoveSpinner || e.getSource() == entradaJubilatSpinner){
             preuTotal = (int) entradaGeneralSpinner.getValue() * 10 + (int) entradaJoveSpinner.getValue() * 6 + (int) entradaJubilatSpinner.getValue() * 7;
-            preuTotalField.setText(String.valueOf(preuTotal));
+            preuTotalField.setText(String.valueOf(preuTotal) + "€");
             if((int) entradaGeneralSpinner.getValue() + (int) entradaJoveSpinner.getValue() + (int) entradaJubilatSpinner.getValue() ==  butaquesSeleccionades.size()){
                 pagament.setEnabled(true);
             }else{
