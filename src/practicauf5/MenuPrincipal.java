@@ -17,6 +17,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.*;
@@ -156,7 +157,6 @@ public class MenuPrincipal extends JFrame implements ActionListener, ChangeListe
                 if(butaquesOcupades.indexOf(i + ":" + j) != -1){
                     butaca.setIcon(butacaOcupada);
                 }else{
-
                     butaca.setIcon(butacaLliure);
                 }
 
@@ -169,20 +169,24 @@ public class MenuPrincipal extends JFrame implements ActionListener, ChangeListe
                         if(source.getIcon().equals(butacaOcupada)){
                             JOptionPane.showMessageDialog(null, "Aquesta butaca ja està ocupada");
                         }else if(source.getIcon().equals(butacaLliure)){
-                            Image image = butacaSeleccionada.getImage(); // transform it 
-                            Image newimg = image.getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-                            butacaSeleccionada = new ImageIcon(newimg);  // transform it back
                             int fila = Integer.parseInt(source.getText().substring(0, source.getText().indexOf(":")));
                             int columna = Integer.parseInt(source.getText().substring(source.getText().indexOf(":") + 1, source.getText().length()));
                             source.setIcon(butacaSeleccionada);
                             entradesReservades.setText(entradesReservades.getText() + "Fila: " + fila + " Columna: " + columna + "\n");
                             butaquesSeleccionades.add(fila + ":" + columna);
                         }else if(source.getIcon().equals(butacaSeleccionada)){
-                            source.setIcon(butacaLliure);
                             int fila = Integer.parseInt(source.getText().substring(0, source.getText().indexOf(":")));
                             int columna = Integer.parseInt(source.getText().substring(source.getText().indexOf(":") + 1, source.getText().length()));
                             source.setIcon(butacaLliure);
                             butaquesSeleccionades.remove(fila + ":" + columna);
+                            Iterator<String> it = butaquesSeleccionades.iterator();
+                            entradesReservades.setText("");
+                            while(it.hasNext()){
+                                String filaColumna = it.next();
+                                fila = Integer.parseInt(filaColumna.substring(0, source.getText().indexOf(":")));
+                                columna = Integer.parseInt(filaColumna.substring(source.getText().indexOf(":") + 1, source.getText().length()));
+                                entradesReservades.setText(entradesReservades.getText() + "Fila: " + fila + " Columna: " + columna + "\n");
+                            }
                         }
                         if(entradesReservades.getText().length() > 16 * 19){
                            Font f = entradesReservades.getFont();
@@ -215,11 +219,12 @@ public class MenuPrincipal extends JFrame implements ActionListener, ChangeListe
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == pantallaPagament){
+            System.out.println(nomPersona.getText());
             if(butaquesSeleccionades.size() == 0){
                 JOptionPane.showMessageDialog(null, "Escolleix alguna butaca");
             }else if(dniPersona.getText().length() != 9){
                 JOptionPane.showMessageDialog(null, "Format dni incorrecte. Han de ser 9 caracters");
-            }else if(potObrirPagament && !nomPersona.getText().equals("") && !dniPersona.getText().equals("")){
+            }else if(potObrirPagament && nomPersona.getText().length() > 0 && dniPersona.getText().length() > 0){
                  //pantallaPagament.setAlignmentX(CENTER_ALIGNMENT);
                 preuTotal = 0;
                 potObrirPagament = false;
@@ -307,8 +312,8 @@ public class MenuPrincipal extends JFrame implements ActionListener, ChangeListe
                 ventanaPagament.setVisible(true);
                 ventanaPagament.pack();
                 ventanaPagament.setResizable(false);
-            }else{
-                JOptionPane.showMessageDialog(null, "El nom i dni no poden estar buits");
+            }else if(nomPersona.getText().length() <= 0){
+                JOptionPane.showMessageDialog(null, "El nom o/i dni no pot estar buit");
             }
         }
         
@@ -343,7 +348,12 @@ public class MenuPrincipal extends JFrame implements ActionListener, ChangeListe
                         i++;
                     }
                     c.commit();
+                    butaquesSeleccionades.removeAll(butaquesSeleccionades);
+                    nomPersona.setText("");
+                    dniPersona.setText("");
+                    entradesReservades.setText("");
                     ventanaPagament.dispose();
+                    potObrirPagament = true;
                 }
                 
                 
